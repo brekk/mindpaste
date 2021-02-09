@@ -1,0 +1,8 @@
+extends:
+- sorcerers
+- plugin:react/recommended
+settings:
+  react:
+    version: detect
+rules:
+  camelcase: 1

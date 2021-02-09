@@ -8,8 +8,22 @@
     "start": "next start"
   },
   "dependencies": {
+    "@emotion/react": "^11.1.5",
+    "@emotion/styled": "^11.1.5",
+    "@rebass/forms": "^4.0.6",
+    "axios": "^0.21.1",
+    "blem": "^0.0.9",
+    "date-fns": "^2.17.0",
+    "envtrace": "^0.0.2",
     "next": "10.0.6",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "^17.0.1",
+    "rebass": "^4.0.7",
+    "throttle-debounce": "^3.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "^7.12.13",
+    "@babel/preset-react": "^7.12.13"
   }
 }

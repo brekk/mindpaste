@@ -1,65 +1,69 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { useEffect, useState } from 'react'
+import { trace } from 'xtrace'
+import { pipe, head } from 'ramda'
+import blem from 'blem'
+import { throttle, debounce } from 'throttle-debounce'
+import { api } from 'utils/api'
+import Pagination from 'components/pagination'
+import Menu from 'components/menu'
 
-export default function Home() {
+const bem = blem('Index')
+
+const Index = () => {
+  const [$allJokes, setAllJokes] = useState([])
+  const [$error, setError] = useState(false)
+  const [$joke, setJoke] = useState(false)
+  const [$lastRequest, setLastRequest] = useState(0)
+  const [$search, setRawSearch] = useState('test')
+  const [$lastSearch, setLastSearch] = useState($search)
+  const setSearch = debounce(
+    100,
+    pipe(trace('setting search'), setRawSearch)
+  )
+  useEffect(() => {
+    const searching = $search !== '' && $lastSearch !== $search
+    const overlong = Math.abs($lastRequest - Date.now()) > 3e3
+    console.log('searching', searching)
+    console.log('overlong', overlong)
+    console.log('$ALLJOKES', $allJokes)
+    if (
+      $allJokes.length === 0 ||
+      ((searching || overlong) && $search.length > 3)
+    ) {
+      api
+        .getJokes($search)
+        .catch(setError)
+        .then(raw => {
+          if (raw) {
+            console.log('RAW', raw)
+            const { total, result } = raw
+            if (total) {
+              console.log('totes', total, 'rez', result)
+              setLastSearch($search)
+              if (total > 0 && $allJokes !== result)
+                setAllJokes(result)
+            }
+          }
+        })
+    }
+    if (!$joke && $allJokes.length) {
+      pipe(head, setJoke)($allJokes)
+    }
+    setLastRequest(Date.now())
+    return function cleanup() {
+      setError(false)
+      setSearch('')
+      setLastSearch('')
+    }
+  }, [$allJokes, $error, $joke, $lastRequest, $lastSearch, $search])
+  console.log('jokes', $allJokes)
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+    <article className={bem()}>
+      <Menu search={$search} setSearch={setSearch} />
+      <Pagination allJokes={$allJokes} />
+    </article>
   )
 }
+
+export default Index
