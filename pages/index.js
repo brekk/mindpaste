@@ -30,6 +30,7 @@ const Index = () => {
   const [$requests, setRequests] = useState(0)
   const [$lastRequestTime, setRequestTime] = useState(Date.now())
   const [$error, setError] = useState(false)
+  const [$refreshInterval, setRefreshInterval] = useState(false)
   useEffect(() => {
     const effectTime = Date.now()
     const callSparingly = () => {
@@ -38,34 +39,46 @@ const Index = () => {
     }
     // initial hook, request paginated quotes
     if ($allQuotes.length === 0 && $requests === 0) {
-      callSparingly()
       api
         .getQuotes()
         .catch(setError)
-        .then(pipe(propOr([], 'results'), addIndices, setAllQuotes))
+        .then(
+          pipe(
+            raw => {
+              callSparingly()
+              return raw
+            },
+            propOr([], 'results'),
+            addIndices,
+            setAllQuotes
+          )
+        )
     }
-    // subsequent hook, grab one new quote
-    if ($allQuotes.length && $requests > 0) {
-      setRequestTime(effectTime)
-      if (Math.abs(effectTime - $lastRequestTime) > 3e3) {
-        callSparingly()
-        api
-          .getRandomQuote()
-          .catch(setError)
-          .then(raw => {
-            console.log('adding one new result')
-            setAllQuotes(
-              pipe(addIndices, uniqById)([raw].concat($allQuotes))
-            )
-          })
-      }
+    if (!$refreshInterval) {
+      setRefreshInterval(
+        setInterval(
+          () =>
+            api
+              .getRandomQuote()
+              .catch(setError)
+              .then(raw =>
+                pipe(
+                  uniqById,
+                  addIndices,
+                  setAllQuotes
+                )([raw].concat($allQuotes))
+              ),
+          30e3
+        )
+      )
     }
     return function cancel() {
+      setRefreshInterval(false)
       setRequestTime(Date.now())
       setRequests(0)
       setError(false)
     }
-  }, [$allQuotes, $error])
+  }, [$allQuotes])
   console.log('...', $allQuotes)
   return (
     <article className={bem()}>
