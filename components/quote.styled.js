@@ -9,7 +9,10 @@ export const Quote = styled.div`
   width: 100%;
   justify-content: space-between;
   @media (min-width: 36rem) {
-    width: calc(50% - 2rem);
+    width: calc(50% - 1.5rem);
+    &:nth-of-type(odd) {
+      margin-right: 0;
+    }
   }
 `
 

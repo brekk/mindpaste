@@ -46,6 +46,8 @@ export const api = {
     }),
     log.detail('API REQUEST'),
     axios,
-    log.info('singular raw')
+    log.info('singular raw'),
+    bad(throwHard),
+    good(propOr({}, 'data'))
   )
 }
