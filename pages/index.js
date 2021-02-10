@@ -14,7 +14,7 @@ import blem from 'blem'
 import { throttle, debounce } from 'throttle-debounce'
 import { api } from 'utils/api'
 import Pagination from 'components/pagination'
-import Menu from 'components/menu'
+import {Fetch} from 'components/button'
 
 const uniqById = uniqBy(prop('_id'))
 
@@ -44,6 +44,7 @@ const Index = () => {
         .getQuotes()
         .catch(setError)
         .then(pipe(propOr([], 'results'), addIndices, setAllQuotes))
+      // logic here is broken, come back if we have time
       // if ($refreshInterval === false) {
       //   setRefreshInterval(
       //     setInterval(
@@ -72,10 +73,25 @@ const Index = () => {
       setError(false)
     }
   }, [$allQuotes, $refreshInterval])
-  console.log('...', $allQuotes)
   return (
     <article className={bem()}>
-      <Menu search={$search} setSearch={setSearch} />
+      <Fetch
+        onClick={e => {
+          e.preventDefault()
+          api
+            .getRandomQuote()
+            .catch(setError)
+            .then(raw => {
+              return pipe(
+                uniqById,
+                addIndices,
+                setAllQuotes
+              )([raw].concat($allQuotes))
+            })
+        }}
+      >
+        Fetch a new Quote
+      </Fetch>
       <Pagination allQuotes={$allQuotes} />
     </article>
   )

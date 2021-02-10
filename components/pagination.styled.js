@@ -12,10 +12,10 @@ export const Page = styled.div`
   display: ${p => (p.active ? 'flex' : 'none')};
   flex-direction: row;
   flex-wrap: wrap;
-  border: 1px dashed lime;
 `
 
 export const headerFooter = css`
+  padding: 1rem;
   display: flex;
   flex-direction: row;
   width: 100%;

@@ -87,11 +87,20 @@ const tags = [
 const colorTags = cond([
   [equals('business'), () => '#0c0'],
   [equals('education'), () => '#00a'],
+  [equals('faith'), () => 'linear-gradient(0deg, white, black)'],
   [equals('famous-quotes'), () => '#fc0'],
   [equals('friendship'), () => '#419d41'],
-  [equals('wisdom'), () => '#409'],
-  [equals('technology'), () => '#0cf'],
+  [equals('future'), () => '#444'],
+  [equals('politics'), () => '#d04949'],
+[equals('inspirational'), () => '#6eade6'],
+[equals('community'), () => '#e13990'],
+[equals('social-justice'), () => '#7fb026'],
+[equals('love'), () => '#b02626'],
+  [equals('happiness'), () => '#f30'],
+  [equals('history'), () => '#888'],
   [equals('religion'), () => '#900'],
+  [equals('technology'), () => '#0cf'],
+  [equals('wisdom'), () => '#409'],
   [() => true, () => '#ccc']
 ])
 const textColor = cond([
@@ -101,7 +110,7 @@ const textColor = cond([
 ])
 
 export const Tag = styled.div`
-  background-color: ${p => colorTags(p.value)};
+  background: ${p => colorTags(p.value)};
   color: ${p => textColor(p.value)};
   border: 2px solid rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
