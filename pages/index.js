@@ -14,7 +14,7 @@ import blem from 'blem'
 import { throttle, debounce } from 'throttle-debounce'
 import { api } from 'utils/api'
 import Pagination from 'components/pagination'
-import {Fetch} from 'components/button'
+import { Fetch } from 'components/button'
 
 const uniqById = uniqBy(prop('_id'))
 
@@ -25,6 +25,8 @@ const addIndices = addIndex(map)((raw, index) =>
 )
 
 const Index = () => {
+  const [$email, setEmail] = useState('')
+  const [$page, setPage] = useState(0)
   const [$search, setSearch] = useState('')
   const [$allQuotes, setAllQuotes] = useState([])
   const [$newQuote, setNewQuote] = useState(false)
@@ -82,17 +84,21 @@ const Index = () => {
             .getRandomQuote()
             .catch(setError)
             .then(raw => {
-              return pipe(
-                uniqById,
-                addIndices,
-                setAllQuotes
+              return pipe(uniqById, addIndices, setAllQuotes, () =>
+                setPage(0)
               )([raw].concat($allQuotes))
             })
         }}
       >
         Fetch a new Quote
       </Fetch>
-      <Pagination allQuotes={$allQuotes} />
+      <Pagination
+        allQuotes={$allQuotes}
+        page={$page}
+        setPage={setPage}
+        setEmail={setEmail}
+        email={$email}
+      />
     </article>
   )
 }

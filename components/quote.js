@@ -19,7 +19,7 @@ const bem = blem('Quote')
 
 const formatter = formatWithOptions({ locale: de }, 'MM/dd/yyyy')
 
-const Quote = ({ quote: $quote }) => {
+const Quote = ({ quote: $quote, email: $email, setEmail }) => {
   const link = 'api.quotable.io/quotes/' + $quote._id
   return (
     $quote.length && (
@@ -40,7 +40,10 @@ const Quote = ({ quote: $quote }) => {
               ))}
             </TagList>
           )}
-          <Link href={'//' + link}>Share: {link}</Link>
+          Share with a friend?
+          <input defaultValue={$email} onChange={e => 
+            setEmail(e.target.value)}
+/>
         </Footer>
       </RawQuote>
     )

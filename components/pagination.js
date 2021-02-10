@@ -16,9 +16,8 @@ const bem = 'Pagination'
 const MAX_PER_PAGE = 10
 
 const uniquePageId = map(prop('id'), join(''))
-const Pager = ({ allQuotes: $allQuotes }) => {
+const Pager = ({ allQuotes: $allQuotes, page: $page, setPage, email: $email, setEmail }) => {
   const splits = splitEvery(MAX_PER_PAGE, $allQuotes)
-  const [$page, setPage] = useState(0)
   const [pageLeft, pageRight] = [-1, 1].map(x => e => {
     e.preventDefault()
     const plan = $page + x
@@ -48,7 +47,7 @@ const Pager = ({ allQuotes: $allQuotes }) => {
           >
             <Header>{context}</Header>
             {page.map(quote => (
-              <Quote quote={quote} key={quote.id} />
+              <Quote quote={quote} key={quote.id} setEmail={setEmail} email={$email} />
             ))}
             <Footer>{context}</Footer>
           </Page>
