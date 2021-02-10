@@ -1,6 +1,7 @@
 import blem from 'blem'
 import { splitEvery } from 'ramda'
 import React, { useState } from 'react'
+import { Pagination as Styled } from './pagination.styled'
 import Quote from './quote'
 
 const bem = 'Pagination'
@@ -13,9 +14,13 @@ const Page = ({ allQuotes: $allQuotes }) => {
     setPage($page + x)
   )
   console.log('SPLITS', splits)
-  return <div>
-    {$allQuotes.map(quote => <Quote quote={quote} key={quote.id} />)}
-  </div>
+  return (
+    <Styled>
+      {$allQuotes.map(quote => (
+        <Quote quote={quote} key={quote.id} />
+      ))}
+    </Styled>
+  )
 }
 
 export default Page

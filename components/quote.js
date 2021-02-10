@@ -4,14 +4,15 @@ import blem from 'blem'
 import { formatWithOptions } from 'date-fns/fp'
 import { de } from 'date-fns/locale'
 import {
+  Author,
+  BlockQuote,
+  Figure,
+  Footer,
+  Link,
+  Quote as RawQuote,
+  Tag,
   TagEl,
   TagList,
-  Author,
-  Quote as RawQuote,
-  Figure,
-  Tag,
-  Footer,
-  BlockQuote
 } from './quote.styled'
 
 const bem = blem('Quote')
@@ -34,12 +35,12 @@ const Quote = ({ quote: $quote }) => {
             <TagList className={bem('tags')}>
               {$quote.tags.map(c => (
                 <TagEl key={c} className={bem('tag', c)}>
-                  <Tag className={bem('tag-value')}>{c}</Tag>
+                  <Tag className={bem('tag-value', c)} value={c}>{c}</Tag>
                 </TagEl>
               ))}
             </TagList>
           )}
-          <a href={'//' + link}>Share: {link}</a>
+          <Link href={'//' + link}>Share: {link}</Link>
         </Footer>
       </RawQuote>
     )

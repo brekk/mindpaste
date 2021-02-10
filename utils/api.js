@@ -6,7 +6,10 @@ import { trace } from 'xtrace'
 // since the chuck norris API has a free search text functionality,
 // and quotable does not, let's make one up
 const BACKEND = `https://api.quotable.io`
-const endpoint = map(z => BACKEND + z, {
+const endpoint = pipe(
+  map(z => BACKEND + z),
+  Object.freeze
+)({
   random: '/random',
   quotes: '/quotes',
   tags: '/tags',
@@ -32,8 +35,17 @@ export const api = {
     }),
     log.detail('API REQUEST'),
     axios,
-    log.info('singular raw'),
+    log.info('plural raw'),
     bad(throwHard),
     good(propOr({}, 'data'))
+  ),
+  getRandomQuote: pipe(
+    () => ({
+      url: endpoint.random,
+      method: 'get'
+    }),
+    log.detail('API REQUEST'),
+    axios,
+    log.info('singular raw')
   )
 }

@@ -1,11 +1,16 @@
 import styled from '@emotion/styled'
+import { equals, cond } from 'ramda'
 
 export const Quote = styled.div`
   display: flex;
   flex-direction: column;
   border: 1rem solid black;
-  margin: 1rem;
-  max-width: 30rem;
+  margin: 0.5rem 1rem;
+  width: 100%;
+  justify-content: space-between;
+  @media (min-width: 36rem) {
+    width: calc(50% - 2rem);
+  }
 `
 
 export const Figure = styled.figure`
@@ -28,36 +33,84 @@ export const Author = styled.figcaption`
   }
 `
 
-export const Tag = styled.div`
-  background-color: #555;
-  color: #fc0;
-  border: 2px solid #777;
-  display: inline-block;
-  padding: 0.5rem;
-  text-transform: uppercase;
-  border-radius: 10rem;
-  font-size: 0.8rem;
-`
-
 export const Footer = styled.footer`
   display: flex;
   padding: 0.5rem;
   background-color: #ccc;
   flex-direction: column;
   align-content: center;
+  justify-content: center;
 `
 
 export const TagList = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  width: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: space-around;
 `
 
 export const TagEl = styled.li`
   list-style: none;
   padding: 0;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0.25rem;
+`
+
+const tags = [
+  'business',
+  'education',
+  'faith',
+  'famous-quotes',
+  'friendship',
+  'future',
+  'happiness',
+  'history',
+  'inspirational',
+  'life',
+  'love',
+  'nature',
+  'politics',
+  'proverb',
+  'religion',
+  'science',
+  'success',
+  'technology',
+  'wisdom'
+]
+
+const colorTags = cond([
+  [equals('business'), () => '#0c0'],
+  [equals('education'), () => '#00a'],
+  [equals('famous-quotes'), () => '#fc0'],
+  [equals('friendship'), () => '#419d41'],
+  [equals('wisdom'), () => '#409'],
+  [equals('technology'), () => '#0cf'],
+  [equals('religion'), () => '#900'],
+  [() => true, () => '#ccc']
+])
+const textColor = cond([
+  [equals('wisdom'), () => '#fff'],
+  [equals('religion'), () => '#ccc'],
+  [() => true, () => '#000']
+])
+
+export const Tag = styled.div`
+  background-color: ${p => colorTags(p.value)};
+  color: ${p => textColor(p.value)};
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  padding: 0.5rem;
+  text-transform: uppercase;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.3);
+`
+
+export const Link = styled.a`
+  font-size: 0.75rem;
 `
