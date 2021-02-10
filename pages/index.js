@@ -16,7 +16,7 @@ import { api } from 'utils/api'
 import Pagination from 'components/pagination'
 import Menu from 'components/menu'
 
-const uniqById = uniqBy(prop('id'))
+const uniqById = uniqBy(prop('_id'))
 
 const bem = blem('Index')
 
@@ -27,6 +27,7 @@ const addIndices = addIndex(map)((raw, index) =>
 const Index = () => {
   const [$search, setSearch] = useState('')
   const [$allQuotes, setAllQuotes] = useState([])
+  const [$newQuote, setNewQuote] = useState(false)
   const [$requests, setRequests] = useState(0)
   const [$lastRequestTime, setRequestTime] = useState(Date.now())
   const [$error, setError] = useState(false)
@@ -42,35 +43,27 @@ const Index = () => {
       api
         .getQuotes()
         .catch(setError)
-        .then(
-          pipe(
-            raw => {
-              callSparingly()
-              return raw
-            },
-            propOr([], 'results'),
-            addIndices,
-            setAllQuotes
-          )
-        )
-    }
-    if (!$refreshInterval) {
-      setRefreshInterval(
-        setInterval(
-          () =>
-            api
-              .getRandomQuote()
-              .catch(setError)
-              .then(raw =>
-                pipe(
-                  uniqById,
-                  addIndices,
-                  setAllQuotes
-                )([raw].concat($allQuotes))
-              ),
-          30e3
-        )
-      )
+        .then(pipe(propOr([], 'results'), addIndices, setAllQuotes))
+      // if ($refreshInterval === false) {
+      //   setRefreshInterval(
+      //     setInterval(
+      //       () =>
+      //         api
+      //           .getRandomQuote()
+      //           .catch(setError)
+      //           .then(raw => {
+      //             console.log('raw', raw, '$all', $allQuotes)
+      //             callSparingly()
+      //             return pipe(
+      //               uniqById,
+      //               addIndices,
+      //               setAllQuotes
+      //             )([raw].concat($allQuotes))
+      //           })
+      //       10e3
+      //     )
+      //   )
+      // }
     }
     return function cancel() {
       setRefreshInterval(false)
@@ -78,7 +71,7 @@ const Index = () => {
       setRequests(0)
       setError(false)
     }
-  }, [$allQuotes])
+  }, [$allQuotes, $refreshInterval])
   console.log('...', $allQuotes)
   return (
     <article className={bem()}>

@@ -31,29 +31,28 @@ const Pager = ({ allQuotes: $allQuotes }) => {
   return (
     <Styled>
       {splits.map((page, i) => {
-
-  const context = (<>
-<PagerButton onClick={pageLeft}>&larr;</PagerButton>
+        const context = (
+          <>
+            <PagerButton onClick={pageLeft}>&larr;</PagerButton>
             <Location>
               Page {i + 1} of {splits.length}
             </Location>
             <PagerButton onClick={pageRight}>&rarr;</PagerButton>
-            </>
-
-  )
+          </>
+        )
         return (
-        <Page index={i} active={i === $page} key={uniquePageId(page)}>
-          <Header>
-          {context}
-                      </Header>
-          {page.map(quote => (
-            <Quote quote={quote} key={quote.id} />
-          ))}
-          <Footer>
-          {context}
-          </Footer>
-        </Page>
-      )
+          <Page
+            index={i}
+            active={i === $page}
+            key={uniquePageId(page)}
+          >
+            <Header>{context}</Header>
+            {page.map(quote => (
+              <Quote quote={quote} key={quote.id} />
+            ))}
+            <Footer>{context}</Footer>
+          </Page>
+        )
       })}
     </Styled>
   )
