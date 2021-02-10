@@ -12,12 +12,15 @@ import {
   Quote as RawQuote,
   Tag,
   TagEl,
-  TagList,
+  TagList
 } from './quote.styled'
 
 const bem = blem('Quote')
 
 const formatter = formatWithOptions({ locale: de }, 'MM/dd/yyyy')
+
+const emailableLink = (email, link) =>
+  `mailto:${email}?subject=I%20found%20a%20great%20quote&body=${link}`
 
 const Quote = ({ quote: $quote, email: $email, setEmail }) => {
   const link = 'api.quotable.io/quotes/' + $quote._id
@@ -35,15 +38,21 @@ const Quote = ({ quote: $quote, email: $email, setEmail }) => {
             <TagList className={bem('tags')}>
               {$quote.tags.map(c => (
                 <TagEl key={c} className={bem('tag', c)}>
-                  <Tag className={bem('tag-value', c)} value={c}>{c}</Tag>
+                  <Tag className={bem('tag-value', c)} value={c}>
+                    {c}
+                  </Tag>
                 </TagEl>
               ))}
             </TagList>
           )}
           Share with a friend?
-          <input defaultValue={$email} onChange={e => 
-            setEmail(e.target.value)}
-/>
+          <input
+            defaultValue={$email}
+            onChange={e => setEmail(e.target.value)}
+          />
+          {$email && (
+            <Link href={emailableLink($email, link)}>Send</Link>
+          )}
         </Footer>
       </RawQuote>
     )
